@@ -107,6 +107,24 @@ namespace Net
 				return false;
 			}
 		}
+        public bool Checkpassword(string id, string pw)
+        {
+            string cmdStr = string.Format("select * from Users where Username = '{0}' and  Password = '{1}';", id, pw);
+            MySqlCommand cmd = new MySqlCommand(cmdStr, sqlConn);
+            try
+            {
+                MySqlDataReader dataReader = cmd.ExecuteReader();
+                bool hasRows = dataReader.HasRows;
+                dataReader.Close();
+                return hasRows;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("[DataMgr] CheckPassword" + e.Message);
+                return false;
+            }
 
-	}
+        }
+
+    }
 }

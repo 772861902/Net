@@ -114,32 +114,82 @@ namespace Net
                     conn.Close();
                     return;
                 }
-                //数据处理
-                string str = System.Text.Encoding.UTF8.GetString(conn.readBuff, 0, count);
-                Console.WriteLine("收到[" + conn.GetAddress() + "]数据" + str);
-                str = conn.GetAddress() + ":" + str;
-                byte[] bytes = System.Text.Encoding.Default.GetBytes(str);
-                //广播给所有正在使用的连接
-                for(int i = 0;i<conns.Length;i++)
-                {
-                    if (conns[i] == null)
-                        continue;
-                    if (!conns[i].isUse)
-                        continue;
-                    Console.WriteLine("将消息转发给:" + conns[i].GetAddress());
-                    conns[i].socket.Send(bytes);
-                }
+                conn.buffCount += count;
+                ProcessData(conn);
                 //继续接收，
                 conn.socket.BeginReceive(conn.readBuff, conn.buffCount, conn.BuffRemain(), SocketFlags.None, ReceiveCb, conn);
 
+                /*
+                    //数据处理
+                    string str = System.Text.Encoding.UTF8.GetString(conn.readBuff, 0, count);
+                    Console.WriteLine("收到[" + conn.GetAddress() + "]数据" + str);
+                    str = conn.GetAddress() + ":" + str;
+                    byte[] bytes = System.Text.Encoding.Default.GetBytes(str);
+                    //广播给所有正在使用的连接
+                    for(int i = 0;i<conns.Length;i++)
+                    {
+                        if (conns[i] == null)
+                            continue;
+                        if (!conns[i].isUse)
+                            continue;
+                        Console.WriteLine("将消息转发给:" + conns[i].GetAddress());
+                        conns[i].socket.Send(bytes);
+                    }
+                */
+
 
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 Console.WriteLine("收到[" + conn.GetAddress() + "]断开连接");
                 conn.Close();
             }
         }
+        //实现缓冲区的消息处理(涉及粘包分包处理）
+        public void ProcessData (Conn conn)
+        {
+            if(conn.buffCount< sizeof(Int32)   )
+            {
+                return;
+            }
+            Array.Copy(conn.readBuff, conn.lenBytes, sizeof(Int32));
+            conn.msgLength = BitConverter.ToInt32(conn.readBuff, 0);
+            if(conn.buffCount< conn.msgLength + sizeof(Int32) )
+            {
+                return;
+            }
+            string str =System.Text.Encoding.Default.GetString(conn.readBuff,sizeof(Int32),conn.msgLength);
+            Console.WriteLine("收到消息 [" + conn.GetAddress() + "]" + str);
+            Send(conn, str);
+            int count = conn.buffCount - conn.msgLength - sizeof(Int32);
+            Array.Copy(conn.readBuff, sizeof(Int32)+ conn.msgLength,conn.readBuff,0,count);
+            conn.buffCount = count;
+            if(conn.buffCount> 0)
+            {
+                ProcessData(conn);
+
+            }
+
+        }
+        
+        //实现消息发送
+        public void Send(Conn conn, string str)
+        {
+            byte[] bytes = System.Text.Encoding.Default.GetBytes(str);
+            byte[] length = BitConverter.GetBytes(bytes.Length);
+            byte[] sendbuff = length.Concat(bytes).ToArray();
+            try
+            {
+                conn.socket.BeginSend(sendbuff,0,sendbuff.Length,SocketFlags.None,null,null);
+
+
+            }
+            catch(Exception e)
+            {
+                Console.WriteLine("[发送消息]"+conn.GetAddress()+":"+e.Message);
+            }
+        }
+
 
         public void Close()
         {
