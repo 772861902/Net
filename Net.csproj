@@ -24,7 +24,7 @@
 
   <ItemGroup>
     <Reference Include="MySql.Data">
-      <HintPath>C:\Users\王方舟\Desktop\双创\unity插件\MySQL Connector Net 6.3.9\Assemblies\v4.0\MySql.Data.dll</HintPath>
+      <HintPath>..\..\..\Desktop\ConsoleApp1\MySql.Data.dll</HintPath>
     </Reference>
   </ItemGroup>
 
