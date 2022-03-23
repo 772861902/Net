@@ -19,6 +19,17 @@ namespace Net
         //Buff
         public byte[] readBuff = new byte[BUFFER_SIZE];
         public int buffCount = 0;
+
+        //粘包分包
+        public byte[] lenBytes = new byte[sizeof(UInt32)];
+        public Int32 msgLength = 0;
+
+        //心跳时间
+        public long lastTickTime = long.MinValue;
+
+        //对应的player
+        //
+
         //构造函数
         public Conn()
         {
@@ -30,6 +41,8 @@ namespace Net
             this.socket = socket;
             isUse = true;
             buffCount = 0;
+            //心跳处理
+            //lastTickTime = Sys.GetTimeStamp();
         }
         //缓冲区剩余字节数
         public int BuffRemain()
@@ -48,9 +61,18 @@ namespace Net
         {
             if (!isUse)
                 return;
+            //if(player != null)
+            //{
+            //    player.Logout();
+            //    return;
+            //}
             Console.WriteLine("[断开连接]" + GetAddress());
+            socket.Shutdown(SocketShutdown.Both);
             socket.Close();
             isUse = false;
+
+            //发送协议
+            
         }
 
 
