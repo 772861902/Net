@@ -11,6 +11,8 @@ class MainClass
         a.Register("wfz", "123");
         Serv serv = new Serv();
         serv.Start("127.0.0.1", 1234);
+        Console.ReadLine();
+
 
         while(true)
         {
