@@ -9,7 +9,7 @@ using System.Collections;
 
 namespace Net
 {
-    public class Serv
+    public class ServNet
     {
         //监听套接字
         public Socket lisetnfd;
@@ -17,6 +17,13 @@ namespace Net
         public Conn[] conns;
         //最大连接数
         public int maxConn = 50;
+
+        public static ServNet instance;
+
+        public ServNet()
+        {
+            instance = this;
+        }
 
         //获得最大连接池索引，返回负数表示失败
         public int NewIndex()
@@ -131,6 +138,20 @@ namespace Net
             {
                 Console.WriteLine("收到[" + conn.GetAddress() + "]断开连接");
                 conn.Close();
+            }
+        }
+
+        public void Close()
+        {
+            for(int i = 0; i < conns.Length;i++)
+            {
+                Conn conn = conns[i];
+                if (conn == null) continue;
+                if (!conn.isUse) continue;
+                lock(conn)
+                {
+                    conn.Close();
+                }
             }
         }
 
