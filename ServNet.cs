@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Net;
 using System.Net.Sockets;
 using System.Collections;
+using System.Diagnostics;
 
 namespace Net
 {
@@ -79,7 +80,7 @@ namespace Net
                 if(index < 0)
                 {
                     socket.Close();
-                    Console.WriteLine("[警告] 连接已满");
+                    System.Diagnostics.Debug.WriteLine("[警告] 连接已满");
 
                 }
                 else
@@ -158,10 +159,10 @@ namespace Net
             {
                 return;
             }
-            string str =System.Text.Encoding.Default.GetString(conn.readBuff,sizeof(Int32),conn.msgLength);
+            string str =System.Text.Encoding.UTF8.GetString(conn.readBuff,sizeof(Int32),conn.msgLength);
             Console.WriteLine("收到一条消息 客户端地址：[" + conn.GetAddress() + "] @ 消息长度 ：" + conn.msgLength +"@ 消息内容：" + str);
             //将收到的消息反馈给客户端
-            Send(conn, "这是一条服务端收到信息后的反馈");
+            Send(conn, str);
             int count = conn.buffCount - conn.msgLength - sizeof(Int32);
             Array.Copy(conn.readBuff, sizeof(Int32)+ conn.msgLength,conn.readBuff,0,count);
             conn.buffCount = count;
@@ -176,7 +177,7 @@ namespace Net
         //实现消息发送
         public void Send(Conn conn, string str)
         {
-            byte[] bytes = System.Text.Encoding.Default.GetBytes(str);
+            byte[] bytes = System.Text.Encoding.UTF8.GetBytes(str);
             byte[] length = BitConverter.GetBytes(bytes.Length);
             byte[] sendbuff = length.Concat(bytes).ToArray();
             try

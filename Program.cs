@@ -7,8 +7,8 @@ class MainClass
     public static void Main(String[] args)
     {
 
-        DataMgr a = new DataMgr();
-        a.Register("wfz", "123");
+        //DataMgr a = new DataMgr();
+        //a.Register("wfz", "123");
         ServNet serv = new ServNet();
         serv.Start("127.0.0.1", 1234);
         Console.ReadLine();
