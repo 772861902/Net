@@ -5,6 +5,12 @@ VisualStudioVersion = 17.0.32112.339
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Net", "Net.csproj", "{92954A27-2E31-4717-92FD-FBFB5F512363}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Client", "..\Client\Client.csproj", "{55BAD250-5998-452F-82CE-E8134A828345}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Client1", "Client1", "{D25ED65B-CE05-42BB-8567-38E8141D7597}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Server", "Server", "{E14A33B3-A449-44F4-9F59-EE01A89383FD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,9 +21,17 @@ Global
 		{92954A27-2E31-4717-92FD-FBFB5F512363}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{92954A27-2E31-4717-92FD-FBFB5F512363}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{92954A27-2E31-4717-92FD-FBFB5F512363}.Release|Any CPU.Build.0 = Release|Any CPU
+		{55BAD250-5998-452F-82CE-E8134A828345}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{55BAD250-5998-452F-82CE-E8134A828345}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{55BAD250-5998-452F-82CE-E8134A828345}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{55BAD250-5998-452F-82CE-E8134A828345}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{92954A27-2E31-4717-92FD-FBFB5F512363} = {E14A33B3-A449-44F4-9F59-EE01A89383FD}
+		{55BAD250-5998-452F-82CE-E8134A828345} = {D25ED65B-CE05-42BB-8567-38E8141D7597}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B4AF74E2-E1B2-4F27-84AE-19E618290BEE}

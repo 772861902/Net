@@ -152,8 +152,9 @@ namespace Net
                 return;
             }
             string str =System.Text.Encoding.Default.GetString(conn.readBuff,sizeof(Int32),conn.msgLength);
-            Console.WriteLine("收到消息 [" + conn.GetAddress() + "]" + str);
-            Send(conn, str);
+            Console.WriteLine("收到一条消息 客户端地址：[" + conn.GetAddress() + "] @ 消息长度 ：" + conn.msgLength +"@ 消息内容：" + str);
+            //将收到的消息反馈给客户端
+            Send(conn, "这是一条服务端收到信息后的反馈");
             int count = conn.buffCount - conn.msgLength - sizeof(Int32);
             Array.Copy(conn.readBuff, sizeof(Int32)+ conn.msgLength,conn.readBuff,0,count);
             conn.buffCount = count;
