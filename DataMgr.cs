@@ -17,6 +17,7 @@ namespace Net
 {
     public class DataMgr
     {
+        int a;
         MySqlConnection sqlConn;
         //单例模式
         public static DataMgr instance;
