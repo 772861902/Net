@@ -28,7 +28,7 @@ namespace Net
         public long lastTickTime = long.MinValue;
 
         //对应的player
-        //
+        public Player player;
 
         //构造函数
         public Conn()
@@ -42,7 +42,7 @@ namespace Net
             isUse = true;
             buffCount = 0;
             //心跳处理
-            //lastTickTime = Sys.GetTimeStamp();
+            lastTickTime = Sys.GetTimeStamp();
         }
         //缓冲区剩余字节数
         public int BuffRemain()
@@ -70,13 +70,13 @@ namespace Net
             socket.Shutdown(SocketShutdown.Both);
             socket.Close();
             isUse = false;
-
-            //发送协议
-            
+   
         }
-
-
-
+        //发送协议数据信息
+        public void Send(ProtocolBase protocol)
+        {
+            ServNet.instance.Send(this, protocol);
+        }
 
     }
 }
