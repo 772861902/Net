@@ -8,17 +8,11 @@ class MainClass
     {
 
         DataMgr a = new DataMgr();
-<<<<<<< HEAD:core/Program.cs
         //玩家注册测试
        // a.Register("werre", "123456");
         ServNet servNet = new ServNet();
         servNet.proto = new ProtocolBytes();
         servNet.Start("127.0.0.1", 1234);
-=======
-        a.Register("wfz", "123");
-        ServNet serv = new ServNet();
-        serv.Start("127.0.0.1", 1234);
->>>>>>> parent of 1963871 (存疑新版本服务端更新):Program.cs
         Console.ReadLine();
 
 

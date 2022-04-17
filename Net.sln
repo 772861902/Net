@@ -5,7 +5,7 @@ VisualStudioVersion = 17.0.32112.339
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Net", "Net.csproj", "{92954A27-2E31-4717-92FD-FBFB5F512363}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Client", "..\Client\Client.csproj", "{55BAD250-5998-452F-82CE-E8134A828345}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Client", "..\Client\Client.csproj", "{55BAD250-5998-452F-82CE-E8134A828345}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Client1", "Client1", "{D25ED65B-CE05-42BB-8567-38E8141D7597}"
 EndProject

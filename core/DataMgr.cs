@@ -139,10 +139,10 @@ namespace Net
             //序列化
             IFormatter formatter = new BinaryFormatter();
             MemoryStream stream = new MemoryStream();
-            PlayerData playerData = new PlayerData();
+            //PlayerData playerData = new PlayerData();
             try
             {
-                formatter.Serialize(stream, PlayerData);
+                //formatter.Serialize(stream, PlayerData);
             }
             catch(Exception e)
             {
