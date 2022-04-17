@@ -18,9 +18,5 @@ namespace Net.Logic
         {
             Console.WriteLine("来自HandlePlayer的消息，玩家：" + player.id + "已成功下线");
         }
-
-
-
-
     }
 }

@@ -61,7 +61,7 @@ namespace Net
             if (!IsSafeStr(id))
                 return false;
             //查询id是否存在
-            string cmdStr = string.Format("select * from players where ID='{0}';", id);
+            string cmdStr = string.Format("select * from users where ID='{0}';", id);
             MySqlCommand cmd = new MySqlCommand(cmdStr, sqlConn);
             try
             {
@@ -93,7 +93,7 @@ namespace Net
                 return false;
             }
             //写入数据库User表
-            string cmdStr = string.Format("insert into players set ID ='{0}' ,PassWord ='{1}';", id, pw);
+            string cmdStr = string.Format("insert into users set ID ='{0}' ,PassWord ='{1}';", id, pw);
             MySqlCommand cmd = new MySqlCommand(cmdStr, sqlConn);
             try
             {
@@ -110,7 +110,7 @@ namespace Net
         //验证密码
         public bool Checkpassword(string id, string pw)
         {
-            string cmdStr = string.Format("select * from players where ID = '{0}' and  PassWord = '{1}';", id, pw);
+            string cmdStr = string.Format("select * from users where ID = '{0}' and  PassWord = '{1}';", id, pw);
             MySqlCommand cmd = new MySqlCommand(cmdStr, sqlConn);
             try
             {
@@ -134,24 +134,24 @@ namespace Net
         public bool CreatePlayer(string id) 
         {
             //防SQL注入
-            //if(IsSafeStr(id))
-              //  return false;
+            if(IsSafeStr(id))
+                return false;
             //序列化
             IFormatter formatter = new BinaryFormatter();
             MemoryStream stream = new MemoryStream();
             PlayerData playerData = new PlayerData();
             try
             {
-                formatter.Serialize(stream, playerData);
+                formatter.Serialize(stream, PlayerData);
             }
             catch(Exception e)
             {
-                Console.WriteLine("[DataMgr]CreatePlayer PlayerData序列化" + e.Message);
+                Console.WriteLine("[DataMgr]CreatePlayer 序列化" + e.Message);
                 return false;
             }
             byte[] byteArr = stream.ToArray();
             //写入数据库
-            string cmdStr = string.Format("insert into players set ID ='{0}',PlayerData=@data;", id);
+            string cmdStr = string.Format("insert into users set ID ='{0}',PlayerData=@data;", id);
             MySqlCommand cmd = new MySqlCommand(cmdStr,sqlConn);
             cmd.Parameters.Add("@data", MySqlDbType.Blob);
             cmd.Parameters[0].Value = byteArr;
@@ -176,26 +176,21 @@ namespace Net
             if (!IsSafeStr(id))
                 return playerData;
             //查询
-            //？？？？？？？？？？？？why playerData???
-
-            string cmdStr = string.Format("select * from players where ID ='{0}';", id);
+            string cmdStr = string.Format("select * from users where ID ='{0}';", id);
             MySqlCommand cmd = new MySqlCommand(cmdStr, sqlConn);
             byte[] buffer = new byte[1];
             try
             {
                 MySqlDataReader dataReader = cmd.ExecuteReader();
-                Console.WriteLine("获取玩家数据");
                 if (!dataReader.HasRows)
                 {
-                    Console.WriteLine("玩家数据为空");
                     dataReader.Close();
                     return playerData;
                 }
                 dataReader.Read();
-                //player第十一列是playerdata,11-1=10
-                long len = dataReader.GetBytes(10, 0, null, 0, 0);//
+                long len = dataReader.GetBytes(1, 0, null, 0, 0);//1是Data?
                 buffer = new byte[len];
-                dataReader.GetBytes(10, 0, buffer, 0, (int)len);
+                dataReader.GetBytes(1, 0, buffer, 0, (int)len);
                 dataReader.Close();
             }
             catch (Exception e)
@@ -229,7 +224,7 @@ namespace Net
             MemoryStream stream = new MemoryStream();
             try
             {
-                 formatter.Serialize(stream, playerData);
+                //  formatter.Serialize(stream, playerData);
 
             }
             catch (Exception e)
@@ -239,7 +234,7 @@ namespace Net
             }
             byte[] byteArr = stream.ToArray();
             //写入数据库
-            string formatStr = "update players set PlayerData = @data where ID = '{0}';";
+            string formatStr = "update users set PlayerData = @data where ID = '{0}';";
             string cmdStr = string.Format(formatStr, player.id);
             MySqlCommand cmd = new MySqlCommand(cmdStr, sqlConn);
             cmd.Parameters.Add("@data", MySqlDbType.Blob);
@@ -255,130 +250,5 @@ namespace Net
                 return false;
             }
         }
-
-
-        //保存角色
-        /*public bool AddMsg(Player player,long TimeStamp,String Msg)
-      {   
-          string id = player.id;
-          //PlayerData playerData = player.data;
-          //序列化
-          IFormatter formatter = new BinaryFormatter();
-          MemoryStream stream = new MemoryStream();
-          try
-          {
-               formatter.Serialize(stream, Msg);
-
-          }
-          catch (Exception e)
-          {
-              Console.WriteLine("[DataMgr]AddMsg 序列化" + e.Message);
-              return false;
-          }
-          byte[] byteArr = stream.ToArray();
-          //写入数据库
-          string formatStr = String.Format("insert player_message wherer ID='{0}',TimeStamp='{1}',Message=@data;"); 
-          string cmdStr = string.Format(formatStr, player.id,TimeStamp);
-          MySqlCommand cmd = new MySqlCommand(cmdStr, sqlConn);
-          cmd.Parameters.Add("@data", MySqlDbType.Blob);
-          cmd.Parameters[0].Value = byteArr;
-          try
-          {
-              cmd.ExecuteNonQuery();
-              return true;
-          }
-          catch (Exception e)
-          {
-              Console.WriteLine("[DataMgr]SavePlayer 写入 " + e.Message);
-              return false;
-          }
-      }  */
-        public bool AddMsg(Player player, long TimeStamp, String Msg)
-        {
-
-
-            string cmdStr = string.Format("insert player_message set ID='{0}',TimeStamp='{1}',Message='{2}';", player.id,TimeStamp,Msg);
-            MySqlCommand cmd = new MySqlCommand(cmdStr, sqlConn);
-            try
-            {
-                cmd.ExecuteNonQuery();
-                Console.WriteLine("[DataMgr]插入用户留言成功:" + player.id+Msg);
-                return true;
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine("[DataMgr]AddMsg " + e.Message);
-                return false;
-            }
-
-        }
-
-        public ProtocolBytes GetMsg(int num,string id)
-        {
-            String cmdStr;
-            ProtocolBytes protocol = new ProtocolBytes();
-            protocol.Addstring("GetMsg");
-
-            //暂时未考虑题目
-            if (num == 0)
-            {
-                 cmdStr = "select * from player_message limit 10;";
-            }
-            else
-            {
-                 cmdStr = string.Format("select * from player_message where ID='{0}' limit 10;", id);
-            }
-          
-            MySqlCommand cmd = new MySqlCommand(cmdStr, sqlConn);
-            //byte[] buffer = new byte[1];
-            try
-            {
-                MySqlDataReader MsgReader = cmd.ExecuteReader();
-                //Console.WriteLine("");
-                if (!MsgReader.HasRows)
-                {
-                    Console.WriteLine("数据库相关内容查询为空");
-                    MsgReader.Close();
-                    return protocol;
-                }
-                int MsgRowsCount = MsgReader.GetSchemaTable().Rows.Count;
-                
-                protocol.AddInt(MsgRowsCount);
-                string str="";
-                while (MsgReader.Read())
-                {
-                    string TimeStamp = MsgReader.GetString(0);
-                    string MsgContent = MsgReader.GetString(2);
-                    //将获取的时间戳字符串转换为数字
-                    int TimeStamptemp = int.Parse(TimeStamp);
-                    //将时间戳转换为日期格式
-                    DateTime datetime = Sys.GetDateTime(TimeStamptemp);
-                    //将日期格式转换为字符串
-                    string TimeStamp1 = datetime.ToString();
-                    string ID = MsgReader.GetString(1);
-                    
-                    protocol.Addstring(ID);
-                    protocol.Addstring(MsgContent);
-                    protocol.Addstring(TimeStamp1);
-                    str=str+TimeStamp1+ID+ MsgContent;
-                }
-                MsgReader.Close();
-                Console.WriteLine("[DataMgr]RetMsg中的消息"+str);
-                //  long len = dataReader.GetBytes(0, 0, null, 0, 0);//1是Data?
-
-                return protocol;
-
-
-            }
-            catch (Exception e)
-
-            {
-              
-                Console.WriteLine("[DataMgr][GetMsg]获取失败！"+e.Message);
-                 return protocol;
-            }
-          
-        }
-
     }
 }

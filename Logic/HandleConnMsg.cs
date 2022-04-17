@@ -38,8 +38,6 @@ public partial class HandleConnMsg
 			protocol.AddInt(-1);
 		}
 		//创建角色
-		//无需创建就是角色就是玩家本身
-		//???存疑
 		DataMgr.instance.CreatePlayer(id);
 		//返回协议给客户端
 		conn.Send(protocol);
@@ -80,15 +78,15 @@ public partial class HandleConnMsg
 		//	return;
 		//}
 		//获取玩家数据
-		 PlayerData playerData = DataMgr.instance.GetPlayerData(id);
-		//if (playerData == null)
-		//{
-		//	protocolRet.AddInt(-1);
-		//	conn.Send(protocolRet);
-		//	return;
-		//}
-		  conn.player = new Player(id, conn);
-		  conn.player.data = playerData;
+		PlayerData playerData = DataMgr.instance.GetPlayerData(id);
+		if (playerData == null)
+		{
+			protocolRet.AddInt(-1);
+			conn.Send(protocolRet);
+			return;
+		}
+		conn.player = new Player(id, conn);
+		conn.player.data = playerData;
 		//事件触发
 		ServNet.instance.handlePlayerEvent.OnLogin(conn.player);
 		//返回

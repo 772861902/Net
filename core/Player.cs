@@ -60,8 +60,8 @@ namespace Net
             //事件处理
             //ServNet.instance.handlePlayerEvent.OnLogout(this);
             //保存
-          //  if(!DataMgr.instance.SavePlayer(this))
-             //   return false;
+            if(!DataMgr.instance.SavePlayer(this))
+                return false;
             //下线
             conn.player = null;
             conn.Close();

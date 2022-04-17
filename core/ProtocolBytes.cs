@@ -76,7 +76,7 @@ public class ProtocolBytes:ProtocolBase
 		if (bytes == null)
 			bytes = numbytes;
 		else
-			bytes = bytes.Concat (numbytes).ToArray ();
+			bytes = numbytes.Concat (numbytes).ToArray ();
     }
 	public int GetInt(int start , ref int end)
     {
